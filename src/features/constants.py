@@ -39,19 +39,26 @@ AIRQUALITY_DROP = [
     "data_ref"
 ]
 
+AIRQUALITY_TO_NUMERIC = [
+    'pm25_north',
+    'pm25_south',
+    'pm25_east',
+    'pm25_west',
+]
+
 MERGED_DROP = [
     "Max Wind Speed (km/h)",
     "Min Wind Speed (km/h)",
     "date",
     "Wind Direction",
-    "psi_north",
-    "psi_south",
-    "psi_east",
-    "psi_west",
-    "psi_northeast",
-    "psi_northwest",
-    "psi_southeast",
-    "psi_southwest",
+    "pm25_north",
+    "pm25_south",
+    "pm25_east",
+    "pm25_west",
+    "pm25_northeast",
+    "pm25_northwest",
+    "pm25_southeast",
+    "pm25_southwest"
 ]
 
 TRAINING_COLUMNS = {

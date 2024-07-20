@@ -25,7 +25,7 @@ def add_cyclical_features(self, column_name, max_value):
     self.merged_data[f'{column_name}_sin'] = np.sin(2 * np.pi * self.merged_data[column_name]/max_value)
     self.merged_data[f'{column_name}_cos'] = np.cos(2 * np.pi * self.merged_data[column_name]/max_value)
     logging.info(f'Added cyclical features for {column_name}')
-    
+
 
 class Database:
     '''Class to handle database operations'''
@@ -48,6 +48,7 @@ class Database:
         try:
             df = pd.read_sql_query(query, self.engine)
             logging.info("Query executed successfully.")
+            logging.info(f"Data queried has {df.shape[0]} rows and {df.shape[1]} columns.")
             return df
         except Exception as e:
             logging.error(f"Failed to execute query: {e}")

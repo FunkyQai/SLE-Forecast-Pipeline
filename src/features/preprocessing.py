@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import logging
 from sklearn.preprocessing import StandardScaler
-from constants import WIND_DIRECTIONS_MAPPING, WEATHER_DROP, WEATHER_TO_NUMERIC, AIRQUALITY_DROP, MERGED_DROP
+from constants import WIND_DIRECTIONS_MAPPING, WEATHER_DROP, WEATHER_TO_NUMERIC, AIRQUALITY_DROP, AIRQUALITY_TO_NUMERIC, MERGED_DROP
 
 class Preprocessing:
 
@@ -20,17 +20,15 @@ class Preprocessing:
         2. Drop irrelevant columns
         3. Convert some columns from object to numeric
         4. Deal with missing values
-        5. Assume negative values for `Wind Speed` and `Wet Bulb Temperature` are typos
-        6. Change `Wet Bulb Temperature` unit of measurement to degrees celcius
-        7. Standardise `Wind Direction` categories
+        5. Take the absolute value of `Wind Speed` 
+        6. Standardise `Wind Direction` categories
         '''
 
         logging.info('Cleaning weather data...')
 
         # Remove duplicate entries
-        self.weatherdata = self.weatherdata[self.weatherdata.duplicated(subset='data_ref', keep='last')]
-        self.weatherdata.drop(columns='data_ref', inplace=True)
-
+        self.weatherdata = self.weatherdata.drop_duplicates(subset='data_ref', keep='last')
+        
         # Drop irrelevant columns
         self.weatherdata.drop(columns=WEATHER_DROP, inplace=True)
 
@@ -41,13 +39,8 @@ class Preprocessing:
         # Handle missing values using interpolation
         self.weatherdata.interpolate(method='linear', limit_direction='both', inplace=True)
 
-        # Take the absolute value of `Wind Speed` and `Wet Bulb Temperature`
+        # Take the absolute value of `Wind Speed`
         self.weatherdata['Max Wind Speed (km/h)'] = self.weatherdata['Max Wind Speed (km/h)'].abs()
-        self.weatherdata['Wet Bulb Temperature (deg F)'] = self.weatherdata['Wet Bulb Temperature (deg F)'].abs()
-
-        # Convert `Wet Bulb Temperature` to degrees celcius
-        self.weatherdata['Wet Bulb Temperature (deg C)'] = (self.weatherdata['Wet Bulb Temperature (deg F)'] - 32) * 5/9
-        self.weatherdata.drop(columns='Wet Bulb Temperature (deg F)', inplace=True)
 
         # Standardise `Wind Direction` categories
         # Convert to lowercase, remove trailing whitespaces, and replace '.' with ''
@@ -68,14 +61,15 @@ class Preprocessing:
         logging.info('Cleaning air quality data...')
 
         # Remove duplicate entries and drop `data_ref`
-        self.airqualitydata = self.airqualitydata[self.airqualitydata.duplicated(subset='data_ref', keep='last')]
-        self.airqualitydata.drop(columns='data_ref', inplace=True)
+        self.airqualitydata = self.airqualitydata.drop_duplicates(subset='data_ref', keep='last')
 
         # Drop irrelevant columns
         self.airqualitydata.drop(columns=AIRQUALITY_DROP, inplace=True)
 
         # Handle missing values using interpolation
-        self.airqualitydata.interpolate(method='linear', limit_direction='both', inplace=True)
+        for column in AIRQUALITY_TO_NUMERIC:
+            self.airqualitydata[column] = pd.to_numeric(self.airqualitydata[column], errors='coerce')
+            self.airqualitydata[column].interpolate(method='linear', limit_direction='both', inplace=True)
 
         # Log the number of rows and columns in the data
         logging.info(f'Cleaned air quality data has {self.airqualitydata.shape[0]} rows and {self.airqualitydata.shape[1]} columns')
@@ -123,19 +117,19 @@ class Preprocessing:
             self.merged_data['Wind Direction'] == 'southwest'
         ]
 
-        # psi values for each wind direction
-        PSI_VALUES = [
-            self.merged_data['psi_north'],
-            self.merged_data['psi_south'],
-            self.merged_data['psi_east'],
-            self.merged_data['psi_west'],
-            self.merged_data['psi_northeast'],
-            self.merged_data['psi_northwest'],
-            self.merged_data['psi_southeast'],
-            self.merged_data['psi_southwest']
+        # pm25 values for each wind direction
+        PM25_VALUES = [
+            self.merged_data['pm25_north'],
+            self.merged_data['pm25_south'],
+            self.merged_data['pm25_east'],
+            self.merged_data['pm25_west'],
+            self.merged_data['pm25_northeast'],
+            self.merged_data['pm25_northwest'],
+            self.merged_data['pm25_southeast'],
+            self.merged_data['pm25_southwest']
         ]
 
-        self.merged_data['pm25'] = np.select(CONDITIONS, PSI_VALUES)
+        self.merged_data['pm25'] = np.select(CONDITIONS, PM25_VALUES)
 
         # Extract month, quarter, and week of the year from date
         self.merged_data['month'] = pd.to_datetime(self.merged_data['date'], dayfirst=True).dt.month
@@ -155,12 +149,12 @@ class Preprocessing:
         '''Remove outliers from the data'''
         logging.info('Removing outliers...')
         for column in columns:
-            q1 = self.data[column].quantile(0.25)
-            q3 = self.data[column].quantile(0.75)
+            q1 = self.merged_data[column].quantile(0.25)
+            q3 = self.merged_data[column].quantile(0.75)
             iqr = q3 - q1
             lower_bound = q1 - multiplier * iqr
             upper_bound = q3 + multiplier * iqr
-            self.data = self.data[self.data[column].between(lower_bound, upper_bound)]
+            self.merged_data = self.merged_data[self.merged_data[column].between(lower_bound, upper_bound)]
 
         logging.info(f'Removed outliers')
 
@@ -169,7 +163,7 @@ class Preprocessing:
         '''Normalize the data'''
         logging.info('Normalizing data...')
         scaler = StandardScaler()
-        for column in columns['NUMERICAL']:
+        for column in columns:
             self.merged_data[column] = scaler.fit_transform(self.merged_data[column].values.reshape(-1, 1))
             
         logging.info('Normalized data')
