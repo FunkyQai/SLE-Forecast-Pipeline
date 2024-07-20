@@ -19,6 +19,14 @@ def setup_logging(log_level=logging.INFO, log_format='%(asctime)s - %(levelname)
     file_handler.setFormatter(logging.Formatter(log_format, datefmt='%Y-%m-%d %H:%M:%S'))
     logging.getLogger().addHandler(file_handler)
 
+
+def add_cyclical_features(self, column_name, max_value):
+    '''Add sine and cosine features for a cyclical column'''
+    self.merged_data[f'{column_name}_sin'] = np.sin(2 * np.pi * self.merged_data[column_name]/max_value)
+    self.merged_data[f'{column_name}_cos'] = np.cos(2 * np.pi * self.merged_data[column_name]/max_value)
+    logging.info(f'Added cyclical features for {column_name}')
+    
+
 class Database:
     '''Class to handle database operations'''
     def __init__(self, db_dir, db_name):
