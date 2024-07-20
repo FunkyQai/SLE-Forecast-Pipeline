@@ -23,10 +23,10 @@ if __name__ == "__main__":
     """
     setup_logging()
     try:
-        current_dir = os.path.dirname(__file__)
         # Query data from the database
         query1 = 'SELECT * FROM weather'
         query2 = 'SELECT * FROM air_quality'
+        current_dir = os.path.dirname(__file__)
         db_dir = os.path.join(current_dir, 'data')
         weather_df = query_data_from_database(query1, db_dir, 'weather.db')
         airquality_df = query_data_from_database(query2, db_dir, 'air_quality.db')
@@ -34,6 +34,7 @@ if __name__ == "__main__":
         weather_csv_path = os.path.join(db_dir, 'weather_data.csv')
         airquality_csv_path = os.path.join(db_dir, 'air_quality_data.csv')
 
+        '''Save the dataframes to CSV
         try:
             weather_df.to_csv(weather_csv_path, index=False)
             logging.info(f"Weather data saved to {weather_csv_path}")
@@ -42,6 +43,9 @@ if __name__ == "__main__":
         except Exception as e:
             logging.error(f"Failed to save dataframes to CSV: {e}")
             raise SystemExit
+        '''
+
+        # Data Preprocessing
 
     except Exception as e:
         logging.error(f'Error: {e}\n{traceback.format_exc()}')

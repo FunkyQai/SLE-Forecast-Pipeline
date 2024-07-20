@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 import os
 import logging
 
+
 def setup_logging(log_level=logging.INFO, log_format='%(asctime)s - %(levelname)s - %(filename)s - %(message)s'):
     '''Setup logging configuration'''
     logging.basicConfig(level=log_level, format=log_format)
