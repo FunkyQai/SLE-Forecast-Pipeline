@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import logging
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from constants import WIND_DIRECTIONS_MAPPING, WEATHER_DROP, WEATHER_TO_NUMERIC, AIRQUALITY_DROP, AIRQUALITY_TO_NUMERIC, MERGED_DROP
 
 class Preprocessing:
@@ -91,7 +91,8 @@ class Preprocessing:
         2. create northeast, northwest, southeast, southwest columns for pm25
         3. create pm25 column based on wind direction
         4. month, quarter, week of the year
-        5. Drop irrelevant columns
+        5. Add cyclical features for month, quarter, and week of the year
+        6. Drop irrelevant columns
         '''
 
         logging.info('Feature engineering...')
@@ -136,7 +137,13 @@ class Preprocessing:
         self.merged_data['quarter'] = pd.to_datetime(self.merged_data['date'], dayfirst=True).dt.quarter
         self.merged_data['week of the year'] = pd.to_datetime(self.merged_data['date'], dayfirst=True).dt.isocalendar().week
 
-        '''Note: Wanted to add the cyclical variables but afraid it might introduce redundancy and complexity'''
+        # Add cyclical features for month, quarter, and week of the year
+        self.merged_data['month_sin'] = np.sin(2 * np.pi * self.merged_data['month']/12)
+        self.merged_data['month_cos'] = np.cos(2 * np.pi * self.merged_data['month']/12)
+        self.merged_data['quarter_sin'] = np.sin(2 * np.pi * self.merged_data['quarter']/4)
+        self.merged_data['quarter_cos'] = np.cos(2 * np.pi * self.merged_data['quarter']/4)
+        self.merged_data['week_sin'] = np.sin(2 * np.pi * self.merged_data['week of the year']/52)
+        self.merged_data['week_cos'] = np.cos(2 * np.pi * self.merged_data['week of the year']/52)
 
         # Drop irrelevant columns
         self.merged_data.drop(columns=MERGED_DROP, inplace=True)
@@ -169,16 +176,25 @@ class Preprocessing:
         logging.info('Normalized data')
         logging.info(f'Normalized data has {self.merged_data.shape[0]} rows and {self.merged_data.shape[1]} columns')
 
+    
+    def encode_ordinal_columns(self, ordinal_info):
+        logging.info('Encoding ordinal columns...')
 
-    def adjust_categorical_variables(self, columns):
-        '''Adjusts month, quarter, and week of year variables to categorical'''
-        logging.info('Adjusting month, year, and week of the year variables...')
+        # Iterate over the ORDINAL dictionary items
+        for column_name, ordinal_list in ordinal_info.items():
+            # Create a mapping from the ordinal values to their indices
+            ordinal_mapping = {value: index for index, value in enumerate(ordinal_list)}
 
-        for column in columns:
-            # Convert to categorical
-            self.merged_data[column] = self.merged_data[column].astype('category')
+            # Apply the mapping to the dataset for the current column
+            self.merged_data[column_name] = self.merged_data[column_name].map(ordinal_mapping)
             
-        logging.info('Adjusted categorical variables')
+        logging.info('Encoded ordinal columns using.')
+        logging.info(f'Encoded data has {self.merged_data.shape[0]} rows and {self.merged_data.shape[1]} columns')
+
+
+
+
+    
 
 
 

@@ -48,7 +48,7 @@ if __name__ == "__main__":
         preprocessing.remove_outliers(TRAINING_COLUMNS['PRESERVE_MORE'], 3.5)
         preprocessing.remove_outliers(TRAINING_COLUMNS['PRESERVE_LESS'], 1.5)
         preprocessing.normalize_data(TRAINING_COLUMNS['NUMERICAL'])
-        preprocessing.adjust_categorical_variables(TRAINING_COLUMNS['CATEGORICAL'])
+        preprocessing.encode_ordinal_columns(TRAINING_COLUMNS['ORDINAL'])
 
 
     except Exception as e:

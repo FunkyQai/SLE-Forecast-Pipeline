@@ -72,15 +72,17 @@ TRAINING_COLUMNS = {
         'Air Pressure (hPa)',
         'Sunshine Duration (hrs)',
         'pm25',
-    ],
-    
-    'CATEGORICAL': 
-    ['month', 
-     'quarter', 
-     'week of the year'
+        'month_sin',
+        'month_cos',
+        'quarter_sin',
+        'quarter_cos',
+        'week_sin',
+        'week_cos'
     ],
     
     'TARGET': 'Daily Solar Panel Efficiency',
+
+    'ORDINAL': {'Daily Solar Panel Efficiency': ['Low', 'Medium', 'High']},
     
     'PRESERVE_MORE': 
     [
