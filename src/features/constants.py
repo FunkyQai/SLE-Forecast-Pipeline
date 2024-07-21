@@ -58,7 +58,10 @@ MERGED_DROP = [
     "pm25_northeast",
     "pm25_northwest",
     "pm25_southeast",
-    "pm25_southwest"
+    "pm25_southwest",
+    "month",
+    "quarter",
+    "week of the year",
 ]
 
 TRAINING_COLUMNS = {
