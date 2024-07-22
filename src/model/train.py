@@ -18,7 +18,6 @@ class ModelTrainer():
         self.models = {}
         self.tuned_models = {}
         self.model_metrics = {}
-        self.f1_scores = {}
         self.X = self.data.drop(columns=TRAINING_COLUMNS['TARGET'])
         self.y = self.data[TRAINING_COLUMNS['TARGET']]
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, random_state=42, stratify=self.y)
@@ -79,7 +78,6 @@ class ModelTrainer():
 
         self.tuned_models[str(model).split("(")[0]] = grid_search.best_estimator_
 
-
     def train_svm(self):
         '''Train SVC model'''
         logging.info('Training SVC...')
@@ -110,7 +108,6 @@ class ModelTrainer():
 
         return model
 
-
     def train_gradient_boosting(self):
         '''Train GradientBoostingClassifier model'''
         logging.info('Training GradientBoostingClassifier...')
@@ -126,7 +123,6 @@ class ModelTrainer():
         self.models[str(model).split("(")[0]] = model
 
         return model
-
 
     def train_xgboost(self):
         '''Train XGBClassifier model'''

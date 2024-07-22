@@ -13,7 +13,6 @@ AIAP Batch 18 Technical Assessment
 5. [Feature Processing](#feature-processing)
 6. [Model Selection](#model-selection)
 7. [Model Evaluation](#model-evaluation)
-8. [Deployment Considerations](#deployment-considerations)
 
 
 ### Folder Structure
@@ -253,24 +252,53 @@ In the development of predictive models for classifying solar panel efficiency a
 - **Pros:**
   - Known for its high performance and speed, enabling timely efficiency predictions.
   - Capable of handling missing data, a common issue in weather datasets.
-  - Incorporates regularization to curb overfitting, ensuring that our model generalizes well to unseen data.
+  - Incorporates regularization to curb overfitting, ensuring that our model generalises well to unseen data.
 - **Cons:**
-  - Risk of overfitting if hyperparameters are not meticulously tuned, necessitating careful optimization to achieve the best results.
+  - Risk of overfitting if hyperparameters are not meticulously tuned, requires careful optimisation to achieve the best results.
   - More complex and potentially more computationally intensive than other models, which could be a consideration if computational resources are limited.
 
 ### Gradient Boost Classifier
 - **Pros:**
-  - Provides top-notch accuracy, a critical factor in correctly classifying efficiency levels to optimize operational planning.
-  - Highly flexible, allowing for customization to our specific needs through loss function optimization and hyperparameter tuning.
-  - Often used as a baseline for comparison due to its simplicity and effectiveness in a wide range of tasks.
+  - Provides high accuracy, a critical factor in correctly classifying efficiency levels to optimise operational planning.
+  - Simple and effective in a wide range of tasks. We are using this as a baseline to compare with XGBoost.
 - **Cons:**
   - Its sequential nature makes training time-consuming, which could delay the deployment of our predictive models.
-  - While it offers high accuracy, if results are comparable to more complex models like XGBoost, the preference might lean towards Gradient Boost due to its lower computational demands.
 
 
 ## Model Evaluation
-Discuss how the models were evaluated, including the metrics used. Provide insights into the performance of each model and any optimizations or adjustments made.
 
-## Deployment Considerations
-Outline any considerations for deploying the models developed, including potential challenges and how they might be addressed.
+### Metrics Used
+
+- **Accuracy**: Measures the proportion of correct predictions among the total number of cases examined. High accuracy indicates that the model performs well across all classes but may not capture performance on imbalanced datasets effectively.
+
+- **Precision**: Represents the ratio of true positive predictions to the total positive predictions. Precision is crucial in scenarios where the cost of a false positive is high.
+
+- **Recall (Sensitivity)**: The ratio of true positive predictions to the actual positives. High recall indicates the model's ability to capture most of the positive cases, essential in situations where missing a positive case has significant consequences.
+
+- **F1 Score**: The harmonic mean of precision and recall, providing a single metric to assess the balance between them. An F1 score reaches its best value at 1 (perfect precision and recall) and worst at 0. It is particularly useful for comparing models on imbalanced datasets where one class or another may dominate.
+
+Given the task's focus on classifying solar panel efficiency into 'Low', 'Medium', or 'High' categories, the F1 score is the best metric because it balances the precision and recall, ensuring that the model accurately identifies each efficiency level without disproportionately misclassifying them. This balance is crucial for optimizing operational planning and maintenance scheduling, where both overestimating and underestimating efficiency levels could lead to inefficiencies and increased operational costs.
+
+### Evaluation
+
+After training and evaluating the four models on the same dataset, we used the weighted F1 score as our primary metric for comparison. Here are the results:
+
+| Model                             | Accuracy | Precision | Recall | F1 Score |
+|-----------------------------------|----------|-----------|--------|----------|
+| SVC (Support Vector Classifier)   | 0.7762   | 0.7672    | 0.7762 | 0.7493   |
+| RandomForest Classifier           | 0.8305   | 0.8191    | 0.8305 | 0.8135   |
+| Gradient Boosting Classifier      | 0.8222   | 0.8046    | 0.8222 | 0.8018   |
+| XGBoost Classifier                | 0.8326   | 0.8244    | 0.8326 | 0.8136*  |
+
+### Analysis
+The XGBoost Classifier emerged as the top performer in terms of the weighted F1 score, closely followed by the RandomForest Classifier. Both models demonstrated strong capabilities in accurately classifying solar panel efficiency levels. However, considering the slight edge in performance and the potential for overfitting and computational intensity discussed earlier, the choice between XGBoost and RandomForest may come down to specific deployment considerations, such as available computational resources and the need for real-time predictions.
+
+The Gradient Boosting Classifier, while slightly behind in F1 score, remains a strong contender, especially as a baseline model due to its simplicity and lower computational demands. If computational efficiency is a priority and the slight difference in F1 score is acceptable, Gradient Boosting could be the preferred choice.
+
+The SVC lagged in performance compared to the tree-based models, which might be attributed to its sensitivity to the high dimensionality and complexity of the weather data. Its lower F1 score suggests it might not be the best fit for this particular task, especially when computational efficiency and model interpretability are considered.
+
+### Conclusion
+Given the close performance between the models, the final selection should consider not only the F1 score but also operational requirements such as computational resources, model interpretability, and ease of deployment. XGBoost stands out for scenarios where maximum accuracy is paramount and computational resources are not a limiting factor. For contexts where computational efficiency is more critical, Gradient Boosting offers a compelling balance of performance and resource utilisation.
+
+
 
