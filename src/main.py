@@ -18,13 +18,11 @@ warnings.filterwarnings("ignore")
 
 if __name__ == "__main__":
 
-    
     # Create a parser object
     parser = argparse.ArgumentParser(description='Run the end-to-end pipeline with configurable parameters.')
     args = parser.add_argument('--pca', action='store_true', help='Perform PCA on the data before training the models. The number of components can be determined using the PCA variance threshold defined in models/config.py.')
     parser.add_argument('--tune', action='store_true', help='Perform hyperparameter tuning for the models using GridSearchCV. The parameters can be configured in models/config.py.')
     args = parser.parse_args()
-    
     
     setup_logging()
 

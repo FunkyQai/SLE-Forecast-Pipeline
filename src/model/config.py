@@ -1,31 +1,31 @@
 MODEL_PARAMETERS = {
 
     'SVC': {
-        'C': 0.1,
-        'kernel': 'linear',
+        'C': 1,
+        'kernel': 'rbf',
         'gamma': 'scale',
     },
 
     'RandomForestClassifier': {
-        'n_estimators': 200,
-        'max_depth': 10,
-        'min_samples_split': 10,
-        'min_samples_leaf': 2,
-        'bootstrap': False,
+        'n_estimators': 100,
+        'max_depth': None,
+        'min_samples_split': 2,
+        'min_samples_leaf': 1,
+        'bootstrap': True,
     },
 
     'GradientBoostingClassifier': {
         'n_estimators': 100,
         'max_depth': 3,
-        'learning_rate': 0.01,
-        'min_samples_split': 2, 
-        'min_samples_leaf': 1,
+        'learning_rate': 0.1,
+        'min_samples_split': 5, 
+        'min_samples_leaf': 2,
     },
 
     'XGBClassifier': {
         'n_estimators': 100,
         'learning_rate': 0.01,
-        'max_depth': 3,
+        'max_depth': 10,
         'subsample': 0.8,
         'colsample_bytree': 0.8,
     },
