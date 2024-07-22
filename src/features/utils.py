@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
+import urllib.request
 import os
 import logging
 
@@ -36,6 +37,8 @@ class Database:
         self.db_path = os.path.join(self.db_dir, db_name)
         
         try:
+            url_template = 'https://techassessment.blob.core/{db_name}'
+            urllib.request.urlretrieve(url_template.format(db_name=db_name), self.db_path)
             self.engine = create_engine('sqlite:///' + self.db_path)
             logging.info("Database engine created successfully.")
         except Exception as e:
