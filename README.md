@@ -31,8 +31,6 @@ The project folder has the following structure:
 
 ## Detailed Descriptions
 
-- **.github/**: This directory is used to store GitHub-specific files, such as GitHub Actions workflows, which automate tests, builds, and deployment processes.
-
 - **src/**: Contains all the source code. It is organized into different subdirectories for better modularity.
 
   - **features/**: This subdirectory contains scripts that are crucial for feature engineering, including preprocessing and utility functions.
