@@ -1,10 +1,3 @@
-AIAP Batch 18 Technical Assessment
-
-## Contributor Information
-- **Full Name:** Abdul Qaiyum Lee Bin Abdul Aziz
-- **Email Address:** abdulqaiyumlee@gmail.com
-
-
 ## Overview
 1. [Folder Structure](#folder-structure)
 2. [Execution Instructions](#execution-instructions)
