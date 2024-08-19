@@ -13,8 +13,6 @@
 The project folder has the following structure:
 
 ```
-aiap18-Abdul-Qaiyum-Lee-Bin-Abdul-Aziz-057I/
-├── .github/
 ├── src/
 │   ├── features/
 │   │   ├── constants.py
