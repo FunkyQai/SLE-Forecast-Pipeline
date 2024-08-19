@@ -1,4 +1,7 @@
 ## Overview
+
+The objective of this project is to develop a machine-learning pipeline to predict how many solar panels to deploy on a given day to maximise solar panel efficiency.
+
 1. [Folder Structure](#folder-structure)
 2. [Execution Instructions](#execution-instructions)
 3. [Pipeline Design and Logical Flow](#pipeline-design-and-logical-flow)
